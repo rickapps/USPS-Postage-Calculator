@@ -1,18 +1,60 @@
-﻿using System;
+﻿using RickApps.TestBed.Models;
+using RickApps.USPSRateCalculator;
+using RickApps.USPSRateCalculator.Interfaces;
+using RickApps.USPSRateCalculator.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace TestBed.Controllers
+namespace RickApps.TestBed.Controllers
 {
     public class HomeController : Controller
     {
         public ActionResult Index()
         {
-            return View();
+            Parcel myBox = new Parcel();
+            return View(myBox);
         }
 
+        [HttpPost]
+        public ActionResult Index(Parcel package)
+        {
+            ViewBag.Message = "Testing - Postage Calculation.";
+            if (!ModelState.IsValid)
+            {
+                // Let the user correct their error.
+                return View(package);
+            }
+
+            // Obtain results from USPS and display them
+            int origin;
+            string userID = @System.Configuration.ConfigurationManager.AppSettings["userID"];
+            Int32.TryParse(@System.Configuration.ConfigurationManager.AppSettings["originZIP"], out origin);
+            USPSRateProcessor xmlProcessor = new USPSRateProcessor(userID, origin);
+            try
+            {
+                IEnumerable<IParcelRate> rates = xmlProcessor.GetRates(package);
+                ParcelRates myRate = (ParcelRates)rates.ElementAt(0);
+                Postage myPostage = (Postage)myRate.RateCollection.ElementAt(0);
+                TempData["Rates"] = rates;
+                return this.RedirectToAction("ShowResults");
+                //package.RateResponse = xmlProcessor.LastResponse.ToString();
+                //return View(package);
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+
+        }
+
+        public ActionResult ShowResults()
+        {
+            IEnumerable<IParcelRate> rates = (IEnumerable<IParcelRate>)TempData["Rates"];
+            return View(rates);
+        }
         public ActionResult About()
         {
             ViewBag.Message = "USPS Postage Rate Calculator.";

@@ -1,0 +1,31 @@
+﻿@using RickApps.USPSRateCalculator.Interfaces
+@using RickApps.USPSRateCalculator.Models
+@model IEnumerable<IParcelRate>
+
+@{
+    ViewBag.Title = "ShowResults";
+}
+
+<h2>ShowResults</h2>
+<!-- Packages -->
+<ul>
+    @foreach (ParcelRates package in Model)
+    {
+        <li>
+            @Html.DisplayFor(p => package.ID)
+            @Html.DisplayFor(p => package.ContainerType)
+            <!-- Classes -->
+            <ul>
+                @foreach (Postage postage in package.RateCollection)
+                {
+                    <li>@Html.DisplayFor(q => postage.Service) </li>
+                    <li>@Html.DisplayFor(q => postage.Rate) </li>
+                    foreach (SpecialService service in postage.Services)
+                    {
+                        <li>@Html.DisplayFor(r => service.Name)</li>
+                    }
+                }
+            </ul>
+        </li>
+    }
+</ul>
