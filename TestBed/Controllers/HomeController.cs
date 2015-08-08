@@ -43,6 +43,11 @@ namespace RickApps.TestBed.Controllers
                 //package.RateResponse = xmlProcessor.LastResponse.ToString();
                 //return View(package);
             }
+            catch (ApplicationException e)
+            {
+                ViewBag.Message = string.Format("You need to edit Web.config -- {0}", e.Message);
+                return View(package);
+            }
             catch (Exception e)
             {
                 throw;

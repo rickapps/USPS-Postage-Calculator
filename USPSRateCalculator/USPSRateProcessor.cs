@@ -148,7 +148,14 @@ namespace RickApps.USPSRateCalculator
                 string errNum = response.Element("Number").Value;
                 string errSource = response.Element("Source").Value;
                 string errDesc = response.Element("Description").Value;
-                throw new ApplicationException(string.Format("Error: {0} - {1} ({2})", errNum, errDesc, errSource));
+                if (errNum.Equals("80040B1A"))
+                {
+                    throw new ApplicationException(string.Format("Error: {0} - {1} ({2})", errNum, errDesc, errSource));
+                }
+                else
+                {
+                    throw new Exception(string.Format("Error: {0} - {1} ({2})", errNum, errDesc, errSource));
+                }
             }
 
             foreach (var package in packages)
@@ -178,7 +185,14 @@ namespace RickApps.USPSRateCalculator
                 string errNum = error.Element("Number").Value;
                 string errSource = error.Element("Source").Value;
                 string errDesc = error.Element("Description").Value;
-                throw new ApplicationException(string.Format("Error: {0} - {1} ({2})", errNum, errDesc, errSource));
+                if (errNum.Equals("-2147219498"))
+                {
+                    throw new ApplicationException(string.Format("Error: {0} - {1} ({2})", errNum, errDesc, errSource));
+                }
+                else
+                {
+                    throw new Exception(string.Format("Error: {0} - {1} ({2})", errNum, errDesc, errSource));
+                }
             }
 
             Int32.TryParse(package.Element("Pounds").Value, out intValue);
