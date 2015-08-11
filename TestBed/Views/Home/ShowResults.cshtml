@@ -18,11 +18,13 @@
             <ul>
                 @foreach (Postage postage in package.RateCollection)
                 {
-                    <li>@Html.DisplayFor(q => postage.Service) </li>
-                    <li>@Html.DisplayFor(q => postage.Rate) </li>
+                    <p>@string.Format("Postage for {0}: {1:C}", postage.Service, postage.Rate)</p>
+                    <p>If desired, the following additional services might be available to be added:</p>
+                    
                     foreach (SpecialService service in postage.Services)
                     {
-                        <li>@Html.DisplayFor(r => service.Name)</li>
+                        <!-- TODO: Check service.Available to see if the service is valid -->
+                        <li>@string.Format("{0}: {1:C}", service.Name, service.Rate)</li>
                     }
                 }
             </ul>

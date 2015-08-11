@@ -50,7 +50,8 @@ namespace RickApps.TestBed.Controllers
             }
             catch (Exception e)
             {
-                throw;
+                ViewBag.Message = e.Message;
+                return View(package);
             }
 
         }
